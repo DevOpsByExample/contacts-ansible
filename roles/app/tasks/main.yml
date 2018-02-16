@@ -1,0 +1,44 @@
+---
+- name: Clone the contacts-api source from github
+  git: clone=yes accept_hostkey=yes repo={{ api_git_repo }} dest={{ app_path }}/contacts-api
+  tags: install
+
+- name: Pull the latest contacts-api code
+  git: repo={{ api_git_repo }} update=yes dest={{ app_path }}/contacts-api version={{ git_revision_to_pull }}
+  tags: deploy
+
+- name: Clone the contacts-ui source from github
+  git: clone=yes accept_hostkey=yes repo={{ ui_git_repo }} dest={{ app_path }}/contacts-ui
+  tags: install
+
+- name: Pull the latest contacts-ui code
+  git: repo={{ ui_git_repo }} update=yes dest={{ app_path }}/contacts-ui version={{ git_revision_to_pull }}
+  tags: deploy
+
+- name: Install dependencies
+  command: npm install
+  args:
+    chdir: "{{ app_path }}/contacts-api"
+  tags:
+    - install
+    - deploy
+
+- name: Copy the supervisor.conf
+  template: src=supervisord.conf dest=/etc/supervisor/conf.d/contacts.conf
+  become: true
+  become_method: sudo
+  tags: install
+
+- name: Restart supervisord
+  command: service supervisor restart
+  become: true
+  become_method: sudo
+  tags: install
+
+- name: Restart express app through supervisor
+  supervisorctl: name={{ proj_name }}:express_{{ proj_name }} state=restarted
+  become: true
+  become_method: sudo
+  tags:
+    - install
+    - deploy
