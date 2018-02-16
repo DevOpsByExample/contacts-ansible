@@ -1,0 +1,26 @@
+    gzip on;
+    gzip_min_length 1024;
+    gzip_buffers 4 32k;
+    gzip_types text/plain application/x-javascript text/css image/png image/jpeg;
+    gzip_vary on;
+    gzip_comp_level 9;
+
+    client_max_body_size 10M;
+    keepalive_timeout    70;
+
+    if ($http_host = www.{{ domain }}) {
+        rewrite ^ https://{{ domain }}$request_uri permanent;
+    }
+
+    if ($host !~* ^({{ domain }}|www.{{ domain }})$) {
+        return 444;
+     }
+
+    location / {
+        proxy_redirect      off;
+        proxy_set_header    Host                    $host;
+        proxy_set_header    X-Real-IP               $remote_addr;
+        proxy_set_header    X-Forwarded-For         $proxy_add_x_forwarded_for;
+        proxy_set_header    X-Forwarded-Protocol    $scheme;
+        proxy_pass          http://contacts;
+    }

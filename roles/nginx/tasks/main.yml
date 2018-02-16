@@ -1,0 +1,52 @@
+---
+- name: Install nginx
+  apt: name=nginx state=present
+  become: true
+  become_method: sudo
+  tags: install
+
+- name: Remove the default config
+  file: state=absent path=/etc/nginx/sites-enabled/default
+  become: true
+  become_method: sudo
+  ignore_errors: true
+  tags: install
+
+- name: Stat the SSL Certificate
+  local_action: stat path={{ role_path }}/templates/server.crt
+  register: cert
+  tags: install
+
+- name: Copy the SSL Certificate
+  copy: src=../templates/server.crt dest=/etc/nginx/server.crt
+  become: true
+  become_method: sudo
+  tags: install
+  when: cert.stat.exists == true
+
+- name: Copy the SSL Key
+  copy: src=../templates/server.key dest=/etc/nginx/server.key
+  become: true
+  become_method: sudo
+  tags: install
+  when: cert.stat.exists == true
+
+- name: Configure for DHE parameters
+  command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048 creates=/etc/ssl/certs/dhparam.pem
+  become: true
+  become_method: sudo
+  ignore_errors: true
+  tags: install
+
+- name: Copy nginx configuration
+  template: src=contacts.conf dest=/etc/nginx/sites-enabled/contacts.conf
+  become: true
+  become_method: sudo
+  ignore_errors: true
+  tags: install
+
+- name: Restart nginx
+  service: name=nginx state=restarted
+  become: true
+  become_method: sudo
+  tags: install
