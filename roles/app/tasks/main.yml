@@ -15,10 +15,26 @@
   git: repo={{ ui_git_repo }} update=yes dest={{ app_path }}/contacts-ui version={{ git_revision_to_pull }}
   tags: deploy
 
-- name: Install dependencies
+- name: Install dependencies for contacts-api
   command: npm install
   args:
     chdir: "{{ app_path }}/contacts-api"
+  tags:
+    - install
+    - deploy
+
+- name: Install dependencies for contacts-ui
+  command: npm install
+  args:
+    chdir: "{{ app_path }}/contacts-ui"
+  tags:
+    - install
+    - deploy
+
+- name: Build contacts-ui app
+  command: npm run build
+  args:
+    chdir: "{{ app_path }}/contacts-ui"
   tags:
     - install
     - deploy

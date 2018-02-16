@@ -24,3 +24,19 @@
         proxy_set_header    X-Forwarded-Protocol    $scheme;
         proxy_pass          http://contacts;
     }
+
+    location /ui {
+        alias           {{ app_path }}/contacts-ui/build;
+        access_log      off;
+        log_not_found   off;
+        gzip_static on;
+        expires 28d;
+    }
+
+    location /static {
+        root            {{ app_path }}/contacts-ui/build;
+        access_log      off;
+        log_not_found   off;
+        gzip_static on;
+        expires 28d;
+    }
