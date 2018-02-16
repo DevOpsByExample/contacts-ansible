@@ -1,0 +1,7 @@
+---
+- name: Install and deploy Contacts App
+  hosts:
+    - production
+    - vagrant
+  roles:
+    - common

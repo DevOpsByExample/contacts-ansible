@@ -1,0 +1,25 @@
+---
+- name: Download node.js package
+  get_url: url=http://nodejs.org/dist/v{{ node_version }}/node-v{{ node_version }}-linux-x64.tar.gz dest=/opt
+  become: true
+  become_method: sudo
+  tags: install
+
+- name: Uncompress the node.js package
+  unarchive: src=/opt/node-v{{ node_version }}-linux-x64.tar.gz dest=/opt copy=no
+  become: true
+  become_method: sudo
+  tags: install
+
+- name: setup symlinks
+  file:
+    src: "/opt/node-v{{ node_version }}-linux-x64/bin/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    state: link
+  with_items:
+    - node
+    - npm
+    - npx
+  become: true
+  become_method: sudo
+  tags: install

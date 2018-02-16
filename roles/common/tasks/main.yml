@@ -1,0 +1,31 @@
+---
+- name: Ensure apt is up to date
+  apt: update_cache=yes
+  become: true
+  become_method: sudo
+  tags: install
+
+- name: Ensure all packages are upgraded
+  apt: upgrade=full
+  become: true
+  become_method: sudo
+  tags: install
+
+- name: Ensure following packages are installed
+  apt: name={{ item }}
+  with_items:
+    - git
+    - supervisor
+  become: true
+  become_method: sudo
+  tags: install
+
+- name: Check if node.js exists
+  shell: test "$(node -v 2> /dev/null)" = v{{ node_version}}
+  register: nodejs_installed
+  ignore_errors: True
+
+- name: Install node js
+  include: node.yml
+  when : nodejs_installed|failed
+  tags: install

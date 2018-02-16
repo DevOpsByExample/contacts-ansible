@@ -1,0 +1,12 @@
+---
+db_user: dev
+db_password: dev
+db_name: contacts_development
+db_host: localhost
+base_path: /home/{{ ansible_user_id }}
+app_path: "{{ base_path }}/contacts"
+domain: "{{ play_hosts[0] }}"
+api_git_repo: https://github.com/DevOpsByExample/contacts-api.git
+ui_git_repo: https://github.com/DevOpsByExample/contacts-ui.git
+git_revision_to_pull: HEAD
+proj_name: contacts
