@@ -1,0 +1,29 @@
+---
+- name: Install postgres
+  apt: name={{ item }}
+  with_items:
+    - postgresql
+    - postgresql-contrib
+    - libpq-dev
+    - python-psycopg2
+  become: true
+  become_method: sudo
+  tags: install
+
+- name: Create a db user
+  postgresql_user: name={{ db_user }} password={{ db_password }}
+  vars:
+    ansible_ssh_pipelining: true
+  become: true
+  become_method: sudo
+  become_user: postgres
+  tags: install
+
+- name: Create a db
+  postgresql_db: name={{ db_name }} owner={{ db_user }}
+  vars:
+    ansible_ssh_pipelining: true
+  become: true
+  become_method: sudo
+  become_user: postgres
+  tags: install
