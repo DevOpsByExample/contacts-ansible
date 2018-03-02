@@ -6,7 +6,7 @@ Ansible playbook to setup Contacts App
 Make sure you have Ansible, Virtualbox and Vagrant installed in your machine.
 
 ```code
-# Clone this repo and CD into contacts-ansible.
+# Clone this repo and CD into it.
 
 $ vagrant up
 
