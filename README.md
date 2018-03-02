@@ -1,21 +1,26 @@
 # Contacts App
 Ansible playbook to setup Contacts App
 
-## Usage
+
+## Provision/deploy to vagrant box
+Make sure you have Ansible, Virtualbox and Vagrant installed in your machine.
 
 ```code
-$ brew install ansible
+# Clone this repo and CD into contacts-ansible.
 
-# Clone this repo and edit the hosts.yml production/vagrant section
-
-# To run against vagrant machine
 $ vagrant up
-$ ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook  --private-key=.vagrant/machines/default/virtualbox/private_key  -l vagrant -u vagrant  -i hosts.yml site.yml
-# App can be accessed at: http://192.168.5.100/ui
 
+$ ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook  --private-key=.vagrant/machines/default/virtualbox/private_key  -l vagrant -u vagrant  -i hosts.yml site.yml
+```
+App can be accessed at: http://192.168.5.100/ui
+
+## Provision/deploy to a environment
+Edit hosts.yml as required
+
+```
 # To provision the setup (one-time process)
-$ ansible-playbook -l <vagrant|production> -u <ssh_user> -i hosts.yml site.yml
+$ ansible-playbook -l <staging|production> -u <ssh_user> -i hosts.yml site.yml
 
 # Subsequently to deploy
-$ ansible-playbook -l <vagrant|production> -u <ssh_user> -i hosts.yml -t deploy site.yml
+$ ansible-playbook -l <staging|production> -u <ssh_user> -i hosts.yml -t deploy site.yml
 ```
